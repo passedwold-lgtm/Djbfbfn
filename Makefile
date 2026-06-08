@@ -1,6 +1,11 @@
 # Default Makefile Template
+export TARGET = iphone:latest
+ARCHS = arm64
+
 include $(THEOS)/makefiles/common.mk
+
 TWEAK_NAME = Menu
-ClonedUI_FILES = Tweak.xm MenuViewController.m
-ClonedUI_FRAMEWORKS = UIKit
+Menu_FILES = Tweak.xm MenuViewController.m
+Menu_FRAMEWORKS = UIKit
+
 include $(THEOS_MAKE_PATH)/tweak.mk
