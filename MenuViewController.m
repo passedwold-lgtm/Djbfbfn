@@ -9,10 +9,12 @@
 
 - (void)setupUI {
     self.view.backgroundColor = [UIColor clearColor];
+    self.view.userInteractionEnabled = YES;
     
     // Main Menu Container
     self.menuView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 350, 450)];
-    self.menuView.center = self.view.center;
+    self.menuView.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds));
+    self.menuView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
     self.menuView.backgroundColor = [UIColor colorWithRed:0.10f green:0.10f blue:0.10f alpha:0.90f];
     self.menuView.layer.cornerRadius = 15;
     self.menuView.clipsToBounds = YES;
