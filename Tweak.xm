@@ -14,30 +14,39 @@ static MenuViewController *menuController;
             if (!menuController) {
                 menuController = [[MenuViewController alloc] init];
                 
-                // Get the top-most window to ensure UI is visible and doesn't crash
-                UIWindow *keyWindow = nil;
+                UIWindow *targetWindow = nil;
+                
+                // Modern way to get the window in iOS 13+
                 if (@available(iOS 13.0, *)) {
-                    for (UIWindowScene *scene in [UIApplication sharedApplication].connectedScenes) {
-                        if (scene.activationState == UISceneActivationStateForegroundActive) {
-                            for (UIWindow *window in scene.windows) {
+                    for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
+                        if ([scene isKindOfClass:[UIWindowScene class]] && scene.activationState == UISceneActivationStateForegroundActive) {
+                            UIWindowScene *windowScene = (UIWindowScene *)scene;
+                            for (UIWindow *window in windowScene.windows) {
                                 if (window.isKeyWindow) {
-                                    keyWindow = window;
+                                    targetWindow = window;
                                     break;
                                 }
                             }
                         }
+                        if (targetWindow) break;
                     }
-                } else {
-                    keyWindow = [UIApplication sharedApplication].keyWindow;
+                }
+                
+                // Fallback for older iOS or if no key window found in scenes
+                if (!targetWindow) {
+                    // Using performSelector to avoid compiler warning/error for deprecated keyWindow
+                    #pragma clang diagnostic push
+                    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                    targetWindow = [UIApplication sharedApplication].keyWindow;
+                    #pragma clang diagnostic pop
                 }
 
-                if (keyWindow) {
-                    [keyWindow.rootViewController addChildViewController:menuController];
-                    [keyWindow addSubview:menuController.view];
-                    [menuController didMoveToParentViewController:keyWindow.rootViewController];
+                if (targetWindow) {
+                    [targetWindow.rootViewController addChildViewController:menuController];
+                    [targetWindow addSubview:menuController.view];
+                    [menuController didMoveToParentViewController:targetWindow.rootViewController];
                     
-                    // Basic positioning to prevent immediate crash if frame is zero
-                    menuController.view.frame = keyWindow.bounds;
+                    menuController.view.frame = targetWindow.bounds;
                 }
             }
         });
